@@ -44,9 +44,33 @@ import jp.vmi.selenium.selenese.result.Result;
 import jp.vmi.selenium.selenese.subcommand.SubCommandMap;
 import jp.vmi.selenium.selenese.utils.PathUtils;
 import jp.vmi.selenium.webdriver.WebDriverPreparator;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.NullOutputStream;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
+import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static jp.vmi.selenium.selenese.result.Unexecuted.*;
-import static org.openqa.selenium.remote.CapabilityType.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Deque;
+import java.util.List;
+import java.util.Map;
+
+import static jp.vmi.selenium.selenese.result.Unexecuted.UNEXECUTED;
+import static org.openqa.selenium.remote.CapabilityType.TAKES_SCREENSHOT;
 
 /**
  * Provide Java API to run Selenese script.
@@ -144,7 +168,8 @@ public class Runner implements Context, ScreenshotHandler, HighlightHandler, JUn
         }
     }
 
-    private String takeScreenshot(TakesScreenshot tss, File file) throws WebDriverException {
+    //EQF Change - make the method to protected so we can overwrite it
+    protected String takeScreenshot(TakesScreenshot tss, File file) {
         file = file.getAbsoluteFile();
         // cf. http://prospire-developers.blogspot.jp/2013/12/selenium-webdriver-tips.html (Japanese)
         driver.switchTo().defaultContent();
