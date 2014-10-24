@@ -1,14 +1,14 @@
 package jp.vmi.selenium.selenese.utils;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Utililities for Selenium.
@@ -66,8 +66,14 @@ public class SeleniumUtils {
 
     private static boolean globMatches(String pattern, CharSequence input) {
         // see http://stackoverflow.com/a/3619098
+        /* EQF CHANGE START
         Pattern p = Pattern.compile("\\Q" + pattern.replace("*", "\\E.*\\Q").replace("?", "\\E.\\Q"), Pattern.DOTALL);
         Matcher m = p.matcher(input);
+        return m.matches();
+        */
+
+        Pattern p = Pattern.compile("\\Q" + pattern.replaceAll("\\\\n", "").replace("*", "\\E.*\\Q").replace("?", "\\E.\\Q"), Pattern.DOTALL);
+        Matcher m = p.matcher(input.toString().replaceAll("\n", ""));
         return m.matches();
     }
 

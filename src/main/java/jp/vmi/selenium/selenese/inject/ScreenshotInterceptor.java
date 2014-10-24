@@ -1,13 +1,13 @@
 package jp.vmi.selenium.selenese.inject;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-import org.openqa.selenium.NoSuchWindowException;
-
 import jp.vmi.selenium.selenese.Context;
 import jp.vmi.selenium.selenese.ScreenshotHandler;
 import jp.vmi.selenium.selenese.command.ICommand;
 import jp.vmi.selenium.selenese.result.Result;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.WebDriverException;
 
 /**
  * Interceptor for screenshot.
@@ -26,18 +26,33 @@ public class ScreenshotInterceptor implements MethodInterceptor {
         Object[] args = invocation.getArguments();
         Context context = (Context) args[CONTEXT];
         ICommand command = (ICommand) args[COMMAND];
+
         Result result = (Result) invocation.proceed();
-        if (context instanceof ScreenshotHandler && command.mayUpdateScreen()) {
+
+        // START - EQF CHANGE
+        //if (context instanceof ScreenshotHandler && command.mayUpdateScreen()) {
+        if (context instanceof ScreenshotHandler) {
+
+            Thread.sleep(1000);
+        // END - EQF CHANGE
             ScreenshotHandler handler = (ScreenshotHandler) context;
             String baseName = context.getCurrentTestCase().getBaseName();
+
+            boolean exceptionFired = false;
             try {
                 handler.takeScreenshotAll(baseName, command.getIndex());
             } catch (NoSuchWindowException e) {
                 // ignore if failed to capturing.
+                exceptionFired = true;
+            } catch (WebDriverException e) {
+                e.printStackTrace();
+                exceptionFired = true;
+                // ignore if failed to capturing
             }
-            if (!result.isSuccess())
+            if (!result.isSuccess() && !exceptionFired)
                 handler.takeScreenshotOnFail(baseName, command.getIndex());
         }
+
         return result;
     }
 }

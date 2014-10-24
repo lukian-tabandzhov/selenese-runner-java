@@ -1,16 +1,20 @@
 package jp.vmi.selenium.selenese.command;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.ListIterator;
-import java.util.Map;
-
+import com.google.common.eventbus.EventBus;
 import jp.vmi.selenium.selenese.Context;
 import jp.vmi.selenium.selenese.inject.DoCommand;
 import jp.vmi.selenium.selenese.result.Error;
 import jp.vmi.selenium.selenese.result.Result;
 
-import static jp.vmi.selenium.selenese.result.Success.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Properties;
+
+import static jp.vmi.selenium.selenese.result.Success.SUCCESS;
 
 /**
  * Command list.
@@ -107,8 +111,26 @@ public class CommandList extends ArrayList<ICommand> implements LogIndentLevelHo
             while (commandListIterator.hasNext()) {
                 ICommand command = commandListIterator.next();
                 String[] curArgs = context.getVarsMap().replaceVarsForArray(command.getArguments());
+
+                // START - EQF CHANGE
+                EventBus eventBus = this.getEventBusObject();
+
+                // command execution started
+                Properties commandEventProperties = new Properties();
+                commandEventProperties.put("command", command);
+                eventBus.post(commandEventProperties);
+                // END - EQF CHANGE
+
                 result = result.update(doCommand(context, command, curArgs));
-                if (result.isAborted())
+
+                // START - EQF CHANGE
+                // command execution finished
+                commandEventProperties.put("result", result);
+                eventBus.post(commandEventProperties);
+                // END - EQF CHANGE
+
+		        /*EQF change: added mustAbort check*/
+                if (result.isAborted() || this.mustAbort)
                     break;
                 context.waitSpeed();
             }
@@ -117,4 +139,42 @@ public class CommandList extends ArrayList<ICommand> implements LogIndentLevelHo
         }
         return result;
     }
+
+
+    /*EQF - The changes below covers the mustAbort flag*/
+    private boolean mustAbort = false;
+    public void abortTest(){
+        this.mustAbort = true;
+    }
+
+    private EventBus eventBus = null;
+    private EventBus getEventBusObject(){
+
+        if (this.eventBus != null) {
+            return this.eventBus;
+        }
+
+        ClassLoader classLoader = CommandList.class.getClassLoader();
+        Method method = null;
+        try {
+            method = classLoader.loadClass("com.equafy.event.EventFactory").getMethod("getEventBusObject");
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        try {
+            this.eventBus = (EventBus) method.invoke(null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return this.eventBus;
+    }
+
 }
