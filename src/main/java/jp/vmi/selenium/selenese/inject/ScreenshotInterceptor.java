@@ -32,7 +32,6 @@ public class ScreenshotInterceptor implements MethodInterceptor {
         //if (context instanceof ScreenshotHandler && command.mayUpdateScreen()) {
         if (context instanceof ScreenshotHandler) {
 
-            Thread.sleep(1000);
         // END - EQF CHANGE
             ScreenshotHandler handler = (ScreenshotHandler) context;
             String baseName = context.getCurrentTestCase().getBaseName();
