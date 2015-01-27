@@ -3,7 +3,7 @@
 
   <groupId>jp.vmi</groupId>
   <artifactId>selenese-runner-java</artifactId>
-  <version>1.8.4</version>
+  <version>1.8.4.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>selenese-runner-java</name>
@@ -336,6 +336,13 @@ It supports test-case and test-suite which are Selenium IDE's native format.</de
     </plugins>
   </build>
   <dependencies>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>16.0.1</version>
+    </dependency>
+
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
