@@ -1,6 +1,7 @@
 package jp.vmi.selenium.selenese.utils;
 
 import org.apache.commons.lang3.StringUtils;
+
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +19,8 @@ public class SeleniumUtils {
      * @return true if matched pattern.
      */
     public static boolean patternMatches(String pattern, CharSequence input) {
+        String origPattern = new String(pattern);
+
         String[] p = pattern.split(":", 2);
         if (p.length == 2) {
             String type = p[0].toLowerCase();
@@ -29,6 +32,12 @@ public class SeleniumUtils {
                 return StringUtils.equals(input, p[1]);
             else if ("glob".equals(type))
                 pattern = p[1];
+            else
+                // if here the extracted glob pattern does not match any of the selense supported, so continue
+                // matching with the provided patern as was
+                // Example:
+                // String pattern = "He: He is not selense pattern."
+                pattern = origPattern;
         }
         return globMatches(pattern, input);
 
@@ -42,14 +51,8 @@ public class SeleniumUtils {
 
     private static boolean globMatches(String pattern, CharSequence input) {
         // see http://stackoverflow.com/a/3619098
-        /* EQF CHANGE START
         Pattern p = Pattern.compile("\\Q" + pattern.replace("*", "\\E.*\\Q").replace("?", "\\E.\\Q"), Pattern.DOTALL);
         Matcher m = p.matcher(input);
-        return m.matches();
-        */
-
-        Pattern p = Pattern.compile("\\Q" + pattern.replaceAll("\\\\n", "").replace("*", "\\E.*\\Q").replace("?", "\\E.\\Q"), Pattern.DOTALL);
-        Matcher m = p.matcher(input.toString().replaceAll("\n", ""));
         return m.matches();
     }
 
