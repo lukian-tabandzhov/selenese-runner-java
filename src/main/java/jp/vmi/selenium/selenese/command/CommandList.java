@@ -8,12 +8,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.eventbus.EventBus;
 import jp.vmi.selenium.selenese.Context;
 import jp.vmi.selenium.selenese.inject.DoCommand;
 import jp.vmi.selenium.selenese.result.CommandResult;
 import jp.vmi.selenium.selenese.result.CommandResultList;
 import jp.vmi.selenium.selenese.result.Error;
 import jp.vmi.selenium.selenese.result.Result;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Properties;
+
 
 /**
  * Command list.
@@ -151,8 +157,26 @@ public class CommandList extends ArrayList<ICommand> {
                 int prevSSIndex = (ss == null) ? 0 : ss.size();
                 String[] curArgs = context.getVarsMap().replaceVarsForArray(command.getArguments());
                 evalCurArgs(context, curArgs);
+
+                // START - EQF CHANGE
+                EventBus eventBus = this.getEventBusObject();
+
+                // command execution started
+                Properties commandEventProperties = new Properties();
+                commandEventProperties.put("command", command);
+                eventBus.post(commandEventProperties);
+                // END - EQF CHANGE
+
+
                 Result result = doCommand(context, command, curArgs);
-                if (result.isAborted())
+
+                // START - EQF CHANGE
+                // command execution finished
+                commandEventProperties.put("result", result);
+                eventBus.post(commandEventProperties);
+                // END - EQF CHANGE
+
+                if (result.isAborted() || this.mustAbort)
                     isContinued = false;
                 else
                     context.waitSpeed();
@@ -171,4 +195,42 @@ public class CommandList extends ArrayList<ICommand> {
         }
         return cresultList.getResult();
     }
+
+
+    /*EQF - The changes below covers the mustAbort flag*/
+    private boolean mustAbort = false;
+    public void abortTest(){
+        this.mustAbort = true;
+    }
+
+    private EventBus eventBus = null;
+    private EventBus getEventBusObject(){
+
+        if (this.eventBus != null) {
+            return this.eventBus;
+        }
+
+        ClassLoader classLoader = CommandList.class.getClassLoader();
+        Method method = null;
+        try {
+            method = classLoader.loadClass("com.equafy.event.EventFactory").getMethod("getEventBusObject");
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        try {
+            this.eventBus = (EventBus) method.invoke(null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return this.eventBus;
+    }
+
 }
