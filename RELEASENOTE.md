@@ -1,6 +1,10 @@
 Selenese Runner Java Relase Note
 ================================
 
+### 1.9.1
+
+* Catch up Selenium 2.45.0.
+
 ### 1.9.0
 
 * Update dependency versions.
@@ -9,6 +13,9 @@ Selenese Runner Java Relase Note
 * Remove the following deprecated methods:
     * WebDriverFactory#getEnvironmentVariables()
     * WebDriverManager#getEnvironmentVariables()
+* Add the following feature for HTML result: (#143)
+    * You can select information of test-case by tabs.
+    * Add each command information (start time, duration, sequence number, and result) ordered by time sequence.
 
 ### 1.8.4
 
