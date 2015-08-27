@@ -3,7 +3,7 @@
 
   <groupId>jp.vmi</groupId>
   <artifactId>selenese-runner-java</artifactId>
-  <version>1.9.2-SNAPSHOT</version>
+  <version>2.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>selenese-runner-java</name>
@@ -46,11 +46,11 @@ It supports test-case and test-suite which are Selenium IDE's native format.</de
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <source.version>1.6</source.version>
-    <target.version>1.6</target.version>
+    <source.version>1.7</source.version>
+    <target.version>1.7</target.version>
     <skipTests>true</skipTests>
-    <selenium.version>2.45.0</selenium.version>
-    <slf4j.version>1.7.10</slf4j.version>
+    <selenium.version>2.47.1</selenium.version>
+    <slf4j.version>1.7.12</slf4j.version>
     <maven.version.rules>file://${basedir}/version-rules.xml</maven.version.rules>
     <shade.java.srcdir>src/shade/java</shade.java.srcdir>
     <shade.java.destdir>target/shade-classes</shade.java.destdir>
@@ -398,9 +398,9 @@ It supports test-case and test-suite which are Selenium IDE's native format.</de
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.github.detro</groupId>
+      <groupId>com.codeborne</groupId>
       <artifactId>phantomjsdriver</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.1</version>
       <exclusions>
         <exclusion>
           <artifactId>selenium-server</artifactId>
@@ -411,7 +411,7 @@ It supports test-case and test-suite which are Selenium IDE's native format.</de
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.3.2</version>
+      <version>3.4</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -421,7 +421,7 @@ It supports test-case and test-suite which are Selenium IDE's native format.</de
     <dependency>
       <artifactId>commons-cli</artifactId>
       <groupId>commons-cli</groupId>
-      <version>1.2</version>
+      <version>1.3.1</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -441,7 +441,7 @@ It supports test-case and test-suite which are Selenium IDE's native format.</de
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.1.2</version>
+      <version>1.1.3</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
@@ -481,7 +481,7 @@ It supports test-case and test-suite which are Selenium IDE's native format.</de
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty</artifactId>
-      <version>3.9.6.Final</version>
+      <version>3.9.9.Final</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

@@ -6,14 +6,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
-import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jp.vmi.selenium.selenese.result.Result.Level;
+
+import static jp.vmi.selenium.selenese.result.Result.Level.*;
+import static org.apache.commons.lang3.SystemUtils.*;
 
 /**
  * Selenese Runner Options.
@@ -32,6 +36,8 @@ public class SeleneseRunnerOptions extends Options {
     public static final String DRIVER = "driver";
     public static final String PROFILE = "profile";
     public static final String PROFILE_DIR = "profile-dir";
+    public static final String CHROME_EXTENSION = "chrome-extension";
+    public static final String CHROME_EXPERIMENTAL_OPTIONS = "chrome-experimental-options";
     public static final String PROXY = "proxy";
     public static final String PROXY_USER = "proxy-user";
     public static final String PROXY_PASSWORD = "proxy-password";
@@ -62,6 +68,7 @@ public class SeleneseRunnerOptions extends Options {
     public static final String COOKIE_FILTER = "cookie-filter";
     public static final String COMMAND_FACTORY = "command-factory";
     public static final String NO_EXIT = "no-exit";
+    public static final String STRICT_EXIT_CODE = "strict-exit-code";
     public static final String HELP = "help";
 
     // default values.
@@ -70,19 +77,31 @@ public class SeleneseRunnerOptions extends Options {
     // parts of help message.
     private static final String HEADER = "Selenese script interpreter implemented by Java.";
 
-    private static final String FOOTER = "[Note]"
-        + SystemUtils.LINE_SEPARATOR
-        + "*1 It is available if using \"--driver remote --remote-browser firefox\"."
-        + SystemUtils.LINE_SEPARATOR
-        + "*2 If you want to use basic and/or proxy authentication on Firefox, "
-        + "then create new profile, "
-        + "install AutoAuth plugin, "
-        + "configure all settings, "
-        + "access test site with the profile, "
-        + "and specify the profile by --profile option."
-        + SystemUtils.LINE_SEPARATOR
-        + "*3 Use \"java -cp ..." + SystemUtils.PATH_SEPARATOR + "selenese-runner.jar Main --command-factory ...\". "
-        + "Because \"java\" command ignores all class path settings, when using \"-jar\" option.";
+    private static String statusListItem(Level level) {
+        return "- " + level.strictExitCode + ": " + level.name();
+    }
+
+    private static final String[] FOOTER = {
+        "[Note]",
+        "*1 It is available if using \"--driver remote --remote-browser firefox\".",
+        "",
+        "*2 If you want to use basic and/or proxy authentication on Firefox, "
+            + "then create new profile, "
+            + "install AutoAuth plugin, "
+            + "configure all settings, "
+            + "access test site with the profile, "
+            + "and specify the profile by --profile option.",
+        "",
+        "*3 Use \"java -cp ..." + PATH_SEPARATOR + "selenese-runner.jar Main --command-factory ...\". " + LINE_SEPARATOR
+            + "Because \"java\" command ignores all class path settings, when using \"-jar\" option.",
+        "",
+        "*4 The list of strict exit code is follows:" + LINE_SEPARATOR
+            + statusListItem(SUCCESS) + LINE_SEPARATOR
+            + statusListItem(WARNING) + LINE_SEPARATOR
+            + statusListItem(FAILURE) + LINE_SEPARATOR
+            + statusListItem(ERROR) + LINE_SEPARATOR
+            + statusListItem(UNEXECUTED)
+    };
 
     // org.apache.commons.cli.OptionBuilder is not thread-safe, and will be deprecated on 1.3.
     private static class OptionBuilder {
@@ -156,6 +175,14 @@ public class SeleneseRunnerOptions extends Options {
             .hasArg().withArgName("dir")
             .withDescription("profile directory (Firefox only *1)")
             .create('P'));
+        addOption(OptionBuilder.withLongOpt(CHROME_EXPERIMENTAL_OPTIONS)
+            .hasArg().withArgName("file")
+            .withDescription("path to json file specify experimental options for chrome (Chrome only *1)")
+            .create());
+        addOption(OptionBuilder.withLongOpt(CHROME_EXTENSION)
+            .hasArg().withArgName("file")
+            .withDescription("chrome extension file (Chrome only *1)")
+            .create());
         addOption(OptionBuilder.withLongOpt(PROXY)
             .hasArg().withArgName("proxy")
             .withDescription("proxy host and port (HOST:PORT) (excepting IE)")
@@ -273,6 +300,9 @@ public class SeleneseRunnerOptions extends Options {
         addOption(OptionBuilder.withLongOpt(NO_EXIT)
             .withDescription("don't call System.exit at end.")
             .create());
+        addOption(OptionBuilder.withLongOpt(STRICT_EXIT_CODE)
+            .withDescription("return strict exit code, reflected by selenese command results at end. (See Note *4)")
+            .create());
         addOption(OptionBuilder.withLongOpt(HELP)
             .withDescription("show this message.")
             .create('h'));
@@ -294,7 +324,7 @@ public class SeleneseRunnerOptions extends Options {
     public CommandLine parseCommandLine(String... args) throws IllegalArgumentException {
         CommandLine cli = null;
         try {
-            cli = new PosixParser().parse(this, args);
+            cli = new DefaultParser().parse(this, args);
             log.debug("Specified options:");
             for (Option opt : cli.getOptions())
                 log.debug("[{}]=[{}]", opt.getLongOpt(), opt.getValue());
@@ -305,7 +335,7 @@ public class SeleneseRunnerOptions extends Options {
     }
 
     private int getHelpWidth() {
-        String columns = System.getenv("COLUMNS");
+        String columns = System.getProperty("columns", System.getenv("COLUMNS"));
         if (columns != null && columns.matches("\\d+")) {
             try {
                 return Integer.parseInt(columns) - 2;
@@ -344,7 +374,8 @@ public class SeleneseRunnerOptions extends Options {
         fmt.printHelp(pw, helpWidth, cmdName + " <option> ... <test-case|test-suite> ...\n",
             null, this, HelpFormatter.DEFAULT_LEFT_PAD, HelpFormatter.DEFAULT_DESC_PAD, null);
         pw.println();
-        fmt.printWrapped(pw, helpWidth, FOOTER);
+        for (String footer : FOOTER)
+            fmt.printWrapped(pw, helpWidth, 3, footer);
         pw.flush();
     }
 }
