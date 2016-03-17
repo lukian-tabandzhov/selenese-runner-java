@@ -16,7 +16,12 @@ public class ScreenshotInterceptor extends AbstractDoCommandInterceptor {
     @Override
     protected Result invoke(MethodInvocation invocation, Context context, ICommand command, String[] curArgs) throws Throwable {
         Result result = (Result) invocation.proceed();
-        if (context instanceof ScreenshotHandler && command.mayUpdateScreen()) {
+
+        // START - EQF CHANGE
+        //if (context instanceof ScreenshotHandler && command.mayUpdateScreen()) {
+        if (context instanceof ScreenshotHandler) {
+
+        // END - EQF CHANGE
             ScreenshotHandler handler = (ScreenshotHandler) context;
             String baseName = context.getCurrentTestCase().getBaseName();
             try {

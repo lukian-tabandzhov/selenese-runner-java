@@ -155,3 +155,4 @@ public class SeleniumUtils {
         return major >= 2 || NumberUtils.toInt(version[1]) >= 7;
     }
 }
+
