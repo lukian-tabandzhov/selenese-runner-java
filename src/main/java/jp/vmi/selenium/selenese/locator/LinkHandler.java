@@ -21,7 +21,7 @@ class LinkHandler implements LocatorHandler {
     }
 
     private List<WebElement> findByRegexp(WebDriver driver, By by, Pattern pattern) {
-        List<WebElement> result = new ArrayList<WebElement>();
+        List<WebElement> result = new ArrayList<>();
         List<WebElement> as = driver.findElements(by);
         for (WebElement a : as) {
             String text;
@@ -53,17 +53,18 @@ class LinkHandler implements LocatorHandler {
                 continue;
             if (and)
                 xpath.append(" and ");
-            xpath.append("contains(.,");
+            xpath.append("contains(normalize-space(.),");
             appendXPathString(xpath, ss);
-            xpath.append(")]");
+            xpath.append(")");
             and = true;
         }
+        xpath.append("]");
         By by = and ? By.xpath(xpath.toString()) : By.tagName("a");
         return findByRegexp(driver, by, sp.regexpPattern);
     }
 
     private List<WebElement> findByExactString(WebDriver driver, SeleniumPattern sp) {
-        StringBuilder xpath = new StringBuilder("//a[.=");
+        StringBuilder xpath = new StringBuilder("//a[normalize-space(.)=");
         appendXPathString(xpath, sp.stringPattern);
         xpath.append(']');
         return driver.findElements(By.xpath(xpath.toString()));

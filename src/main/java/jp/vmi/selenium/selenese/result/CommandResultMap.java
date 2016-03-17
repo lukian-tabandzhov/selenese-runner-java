@@ -22,7 +22,7 @@ public class CommandResultMap implements Map<ICommand, List<CommandResult>> {
      * @param cresultList command result list.
      */
     public CommandResultMap(CommandResultList cresultList) {
-        map = new IdentityHashMap<ICommand, List<CommandResult>>(cresultList.size());
+        map = new IdentityHashMap<>(cresultList.size());
         putAll(cresultList);
     }
 
@@ -40,7 +40,7 @@ public class CommandResultMap implements Map<ICommand, List<CommandResult>> {
         ICommand command = ((CommandResult) cresult).getCommand();
         List<CommandResult> list = map.get(command);
         if (list == null)
-            map.put(command, list = new ArrayList<CommandResult>(1));
+            map.put(command, list = new ArrayList<>(1));
         list.add((CommandResult) cresult);
     }
 
@@ -98,25 +98,21 @@ public class CommandResultMap implements Map<ICommand, List<CommandResult>> {
 
     @Override
     public List<CommandResult> put(ICommand key, List<CommandResult> value) {
-        throw new UnsupportedOperationException(new Object() {
-        }.getClass().getEnclosingMethod().toString());
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void putAll(Map<? extends ICommand, ? extends List<CommandResult>> m) {
-        throw new UnsupportedOperationException(new Object() {
-        }.getClass().getEnclosingMethod().toString());
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<CommandResult> remove(Object key) {
-        throw new UnsupportedOperationException(new Object() {
-        }.getClass().getEnclosingMethod().toString());
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException(new Object() {
-        }.getClass().getEnclosingMethod().toString());
+        throw new UnsupportedOperationException();
     }
 }

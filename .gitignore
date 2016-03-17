@@ -19,7 +19,13 @@ release.properties
 .idea/
 *.iml
 
+# Netbeans
+/nbproject
+
 # Emacs
 *~
 \#*
 .\#*
+
+# OS X
+.DS_Store

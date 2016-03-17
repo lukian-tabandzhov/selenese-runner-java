@@ -47,8 +47,9 @@ public final class TestUtils {
      * @param params parameters.
      * @return list of single element array of each paramter.
      */
+    @SafeVarargs
     public static <T> List<Object[]> toParamList(T... params) {
-        List<Object[]> list = new ArrayList<Object[]>();
+        List<Object[]> list = new ArrayList<>();
         for (T param : params)
             list.add(new Object[] { param });
         return list;

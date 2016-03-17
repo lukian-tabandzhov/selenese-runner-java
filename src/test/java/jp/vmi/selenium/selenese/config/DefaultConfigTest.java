@@ -4,10 +4,13 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 
 import static jp.vmi.selenium.selenese.config.SeleneseRunnerOptions.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-@SuppressWarnings("javadoc")
+@SuppressWarnings({ "javadoc", "deprecation" })
 public class DefaultConfigTest {
 
     private final String[] args = {
@@ -49,6 +52,44 @@ public class DefaultConfigTest {
     };
 
     @Test
+    public void testEmptyConfig() {
+        IConfig config = new DefaultConfig();
+        assertThat(config.getOptionValue(DRIVER), is(nullValue()));
+        assertThat(config.getOptionValue(PROFILE), is(nullValue()));
+        assertThat(config.getOptionValue(PROFILE_DIR), is(nullValue()));
+        assertThat(config.getOptionValue(PROXY), is(nullValue()));
+        assertThat(config.getOptionValue(PROXY_USER), is(nullValue()));
+        assertThat(config.getOptionValue(PROXY_PASSWORD), is(nullValue()));
+        assertThat(config.getOptionValue(NO_PROXY), is(nullValue()));
+        assertThat(config.getOptionValues(CLI_ARGS), is(nullValue()));
+        assertThat(config.getOptionValue(REMOTE_URL), is(nullValue()));
+        assertThat(config.getOptionValue(REMOTE_PLATFORM), is(nullValue()));
+        assertThat(config.getOptionValue(REMOTE_BROWSER), is(nullValue()));
+        assertThat(config.getOptionValue(REMOTE_VERSION), is(nullValue()));
+        assertThat(config.getOptionValueAsBoolean(HIGHLIGHT), is(false));
+        assertThat(config.getOptionValue(SCREENSHOT_DIR), is(nullValue()));
+        assertThat(config.getOptionValue(SCREENSHOT_ALL), is(nullValue()));
+        assertThat(config.getOptionValue(SCREENSHOT_ON_FAIL), is(nullValue()));
+        assertThat(config.getOptionValueAsBoolean(IGNORE_SCREENSHOT_COMMAND), is(false));
+        assertThat(config.getOptionValue(BASEURL), is(nullValue()));
+        assertThat(config.getOptionValue(FIREFOX), is(nullValue()));
+        assertThat(config.getOptionValue(CHROMEDRIVER), is(nullValue()));
+        assertThat(config.getOptionValue(IEDRIVER), is(nullValue()));
+        assertThat(config.getOptionValue(PHANTOMJS), is(nullValue()));
+        assertThat(config.getOptionValue(XML_RESULT), is(nullValue()));
+        assertThat(config.getOptionValue(HTML_RESULT), is(nullValue()));
+        assertThat(config.getOptionValue(TIMEOUT), is(nullValue()));
+        assertThat(config.getOptionValue(SET_SPEED), is(nullValue()));
+        assertThat(config.getOptionValue(HEIGHT), is(nullValue()));
+        assertThat(config.getOptionValue(WIDTH), is(nullValue()));
+        assertThat(config.getOptionValues(DEFINE), is(nullValue()));
+        assertThat(config.getOptionValue(ROLLUP), is(nullValue()));
+        assertThat(config.getOptionValue(COOKIE_FILTER), is(nullValue()));
+        assertThat(config.getOptionValue(COMMAND_FACTORY), is(nullValue()));
+        assertThat(config.getArgs(), is(emptyArray()));
+    }
+
+    @Test
     public void testConfigFile() {
         String file = DefaultConfigTest.class.getResource("/config/test.config").getPath();
         IConfig config = new DefaultConfig(new String[] { "--config", file });
@@ -81,7 +122,7 @@ public class DefaultConfigTest {
         assertThat(config.getOptionValue(HEIGHT), is("1024"));
         assertThat(config.getOptionValue(WIDTH), is("768"));
         assertThat(config.getOptionValues(DEFINE), equalTo(new String[] { "key1=value1", "key2=value2", "key3=value3" }));
-        assertThat(config.getOptionValue(ROLLUP), is("/path/to/rollup"));
+        assertThat(config.getOptionValues(ROLLUP), equalTo(new String[] { "/path/to/rollup" }));
         assertThat(config.getOptionValue(COOKIE_FILTER), is("^SID"));
         assertThat(config.getOptionValue(COMMAND_FACTORY), is("full.qualify.class.Name"));
     }
@@ -120,7 +161,7 @@ public class DefaultConfigTest {
         assertThat(config.getOptionValue(HEIGHT), is("2048"));
         assertThat(config.getOptionValue(WIDTH), is("1536"));
         assertThat(config.getOptionValues(DEFINE), equalTo(new String[] { "opt-key1=opt-value1", "opt-key2=opt-value2", "opt-key3=opt-value3" }));
-        assertThat(config.getOptionValue(ROLLUP), is("/opt/path/to/rollup"));
+        assertThat(config.getOptionValues(ROLLUP), equalTo(new String[] { "/opt/path/to/rollup" }));
         assertThat(config.getOptionValue(COOKIE_FILTER), is("^OPT_SID"));
         assertThat(config.getOptionValue(COMMAND_FACTORY), is("opt.full.qualify.class.Name"));
     }

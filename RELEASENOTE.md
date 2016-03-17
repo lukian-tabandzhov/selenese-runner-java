@@ -1,6 +1,67 @@
 Selenese Runner Java Relase Note
 ================================
 
+### 2.5.0
+
+* Replace command line arguments parser from commons-cli to args4j. **Note:** There are too many changes in `IConfig`, `DefaultConfig`, and `SeleneseRunnerOptions` classes.
+* Refine code. (PR #185, #187 by AymanDF)
+* Update dependency versions.
+* Add utility script.
+
+### 2.4.0
+
+* Replace JSON library from org.json to com.google.code.gson.
+* Catch up Selenium 2.52.0.
+* Update dependency versions.
+
+### 2.3.1
+
+* Fix problem with path relativize double URI escaping items like spaces. (PR #183 by stevenebutler)
+* Catch up Selenium 2.50.1.
+
+### 2.3.0
+
+* Avoid NPE if TestCase has no LogRecorder. (PR #176 by deki)
+* Add new API to register custom interceptors for test-case/test-suite execution. (#175)
+* Add "class" locator type. (#173, PR #177 by deki)
+* Revise implementation of mouse event commands. (#179)
+    * `mouseOver`
+    * `mouseOut`
+    * `mouseMove`
+    * `mouseMoveAt`
+    * `mouseDown`
+    * `mouseDownAt`
+    * `mouseUp`
+    * `mouseUpAt`
+* Catch up Selenium 2.50.0. (PR #181 by deki)
+* Update dependency versions.
+
+### 2.2.0
+
+* Change default behaviour of FirefoxDriver: (#172, PR #174 by Harinus)
+    * Don't show default welcome page. (show "about:blank" instead)
+    * Empty "no proxy" hosts by default. (Firefox default is "localhost, 127.0.0.1")  
+      https://developer.mozilla.org/en-US/docs/Mozilla/Preferences/Mozilla_networking_preferences#Proxy
+
+### 2.1.0
+
+* Catch up Selenium 2.48.2.
+* Update dependency versions.
+* Fix RollupManager crash on latest Java 8. (#168, #170)
+* Add command "gotoLabel" which is same as "gotolabel". (#169)
+
+### 2.0.3
+
+* Fix ClassNotFoundException when use user-defined WebDriver factory. (#167)
+
+### 2.0.2
+
+* Manage leading and trailing whitespaces in link_handler in both "exact" and "glob" features. (PR #166 by AndreaColoru)
+
+### 2.0.1
+
+* Fix error on constructing xpath expression in link locator by "glob". (PR #165 by AndreaColoru)
+
 ### 2.0.0
 
 * Change the supported Java version to 7.0 or later, because Selenium 2.47.1 changed one.

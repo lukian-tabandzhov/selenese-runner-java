@@ -115,6 +115,8 @@ public class LinkHandlerTest extends TestBase {
             { "assertElementPresent", "exact:assertion test", Success.class },
             { "assertElementPresent", "exact:anchor with nested elements", Success.class },
             { "assertElementPresent", "glob:*with nested*", Success.class },
+            { "assertElementPresent", "exact:not normalized spaces here", Success.class },
+            { "assertElementPresent", "glob:*normalized spaces*", Success.class },
             { "assertElementPresent", "as*s", Failure.class },
             { "assertElementPresent", "glob:as*s", Failure.class },
             { "assertElementPresent", "regexp:as.+s$", Failure.class },
@@ -125,8 +127,9 @@ public class LinkHandlerTest extends TestBase {
             { "assertElementNotPresent", "regexp:as.+", Failure.class },
             { "assertElementNotPresent", "regexpi:AS.+", Failure.class },
             { "assertElementNotPresent", "exact:assertion test", Failure.class }
+
         };
-        ArrayList<Object[]> data = new ArrayList<Object[]>();
+        ArrayList<Object[]> data = new ArrayList<>();
         for (Object[] factory : factories)
             for (Object[] args : argss)
                 data.add(ArrayUtils.addAll(factory, args));

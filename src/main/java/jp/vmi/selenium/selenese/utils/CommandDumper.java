@@ -27,6 +27,9 @@ public class CommandDumper {
 
     private static final Pattern GETTER = Pattern.compile("(get|is)([A-Z].*)");
 
+    private CommandDumper() {
+    }
+
     private static String append(String s1, String s2) {
         if (StringUtils.isEmpty(s1))
             return s2;
@@ -93,10 +96,10 @@ public class CommandDumper {
      * @param args command line parameters.
      */
     public static void main(String[] args) {
-        Map<String, String> commandInfo = new HashMap<String, String>();
+        Map<String, String> commandInfo = new HashMap<>();
         addCommandInformationFromSubCommandMap(commandInfo);
         addCommandInformationFromCommandFactory(commandInfo);
-        List<Entry<String, String>> result = new ArrayList<Entry<String, String>>(commandInfo.entrySet());
+        List<Entry<String, String>> result = new ArrayList<>(commandInfo.entrySet());
         Collections.sort(result, new Comparator<Entry<String, String>>() {
             @Override
             public int compare(Entry<String, String> e1, Entry<String, String> e2) {

@@ -3,6 +3,7 @@ package jp.vmi.html.result;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,14 +89,10 @@ public class HtmlResult {
     }
 
     private String getTemplate(String filename) {
-        InputStream is = null;
-        try {
-            is = getClass().getResourceAsStream(filename);
-            return IOUtils.toString(is);
+        try (InputStream is = getClass().getResourceAsStream(filename)) {
+            return IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(is);
         }
     }
 
@@ -177,7 +174,7 @@ public class HtmlResult {
                 break;
             }
         }
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("title", testSuite.getName() + " results");
         model.put("sysInfo", SystemInformation.getInstance());
         model.put("testSuite", testSuite);
@@ -212,7 +209,7 @@ public class HtmlResult {
     public void generateIndex() {
         if (htmlResultDir == null)
             return;
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("title", "Index of test-suite results.");
         model.put("tree", tree);
         String html = getEngine().transform(getTemplate("index.html"), model);

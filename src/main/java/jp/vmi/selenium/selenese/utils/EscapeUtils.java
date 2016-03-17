@@ -1,11 +1,10 @@
 package jp.vmi.selenium.selenese.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.io.Charsets;
 
 /**
  *  String escape utilities.
@@ -20,7 +19,7 @@ public class EscapeUtils {
     public static final Pattern HTML_RE = Pattern.compile("([<>&\"'\\\\])|\r?\n|\r");
 
     /** Mapping table for HTML escape. */
-    public static final Map<String, String> HTML_ESC_MAP = new HashMap<String, String>();
+    public static final Map<String, String> HTML_ESC_MAP = new HashMap<>();
 
     static {
         HTML_ESC_MAP.put("<", "&lt;");
@@ -87,7 +86,7 @@ public class EscapeUtils {
             int start = matcher.start();
             if (index < start)
                 result.append(s, index, start);
-            for (byte b : matcher.group().getBytes(Charsets.UTF_8))
+            for (byte b : matcher.group().getBytes(StandardCharsets.UTF_8))
                 result.append(String.format("%%%02x", b));
             index = matcher.end();
         }

@@ -22,7 +22,7 @@ public class CommandList extends ArrayList<ICommand> {
 
     private static final long serialVersionUID = 1L;
 
-    private final Map<Object, Integer> indexCache = new HashMap<Object, Integer>();
+    private final Map<Object, Integer> indexCache = new HashMap<>();
 
     @Override
     public boolean add(ICommand command) {
@@ -65,15 +65,13 @@ public class CommandList extends ArrayList<ICommand> {
     @Deprecated
     @Override
     public CommandListIterator listIterator(int index) {
-        throw new UnsupportedOperationException(new Object() {
-        }.getClass().getEnclosingMethod().toString());
+        throw new UnsupportedOperationException();
     }
 
     @Deprecated
     @Override
     public CommandListIterator listIterator() {
-        throw new UnsupportedOperationException(new Object() {
-        }.getClass().getEnclosingMethod().toString());
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -159,7 +157,7 @@ public class CommandList extends ArrayList<ICommand> {
                 if (ss == null || prevSSIndex == ss.size())
                     newSS = null;
                 else
-                    newSS = new ArrayList<Screenshot>(ss.subList(prevSSIndex, ss.size()));
+                    newSS = new ArrayList<>(ss.subList(prevSSIndex, ss.size()));
                 CommandResult cresult = new CommandResult(sequence.toString(), command, newSS, result, cresultList.getEndTime(), System.currentTimeMillis());
                 cresultList.add(cresult);
 
